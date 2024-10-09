@@ -1,58 +1,114 @@
-
-<html>
-    <header><br>
-        <font color="white" size="45"><center><b>Tic-Tac-Toe</b></center></font><br><hr>
-    </header>
-    
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
     <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.play1 button a {
-    color : red ;
-    text-decoration : none ;
-}
+        /* Body Styles */
+        body {
+            background-color: black;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
 
-.play2 button a {
-      color  : red ;
-    text-decoration : none;
-}
+        /* Title */
+        .title {
+            text-align: center;
+            margin-top: 20px;
+        }
         
+        .title p {
+            font-size: 10vw; /* Larger heading for responsiveness */
+            color: white;
+            font-weight: bold;
+        }
+
+        hr {
+            border: 1px solid white;
+            margin: 20px 0;
+        }
+
+        /* Image and Button Containers */
+        .play1, .play2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        img {
+            width: 80%;
+            max-width: 800px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        button {
+            background-color: white;
+            color: black;
+            font-size: 1.5em;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ddd;
+        }
+
+        /* Links */
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 1.2em;
+            margin-top: 30px;
+        }
+
     </style>
-    
-    <body bgcolor="black">
-        <div class="play1">
-        <center>
-            <img width="380px" height="190px" src="#">
-        </center>
-        <br>
-        <center>
-            
-            <button>
-                <a href="2play.html" target="_blank"><font color="black" size="5px" >Play with Friends</a></font>
-            </button>
-            </center>
-        </div>
-            <br>
-            <hr>
-            <br>
-        <div class="play2">
-            <center>
-                <img width="380px" height="190px" src="#">
-            </center>
-            <br>
-            
-            <center>
-                <button>
-                    <a href="Machineplay.html" target="_blank"><font color="black" size="5px">Play with Machine</font></a>
-                </button>
-            </center>
+</head>
+<body>
+    <!-- Title Section -->
+    <div class="title">
+        <p>Tic-Tac-Toe</p>
+        <hr>
     </div>
-            <br>
-            <hr>
-            <br>
-            <center>
-                <font color="white" size ="4px">Created by Rehan&co.</font>
-            </center>
-        
-    </body>
-                                  
+
+    <!-- Play with Friends Section -->
+    <div class="play1">
+        <img src="/storage/emulated/0/Download/images - 2024-10-09T135335.240.jpeg" alt="Play with Friends">
+        <a href="2Player.html" target="_blank">
+            <button>Play with Friends</button>
+        </a>
+    </div>
+
+    <!-- Play with Machine Section -->
+    <div class="play2">
+        <img src="/storage/emulated/0/Download/tic-tac-toe_in_webassembly_for_go_web_4x.png" alt="Play with Machine">
+        <a href="Machineplay.html" target="_blank">
+            <button>Play with Machine</button>
+        </a>
+    </div>
+    <hr>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Created by Rehan&co.</p>
+    </div>
+</body>
 </html>
