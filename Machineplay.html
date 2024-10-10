@@ -11,73 +11,62 @@
             padding: 0;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            align-items: center; /* Center align the board */
             min-height: 100vh;
             background-color: #2c3e50;
-            position: relative;
         }
-
         h1 {
+            text-align: center;
             color: #fff;
             margin-bottom: 20px;
+            width: 100%; /* Full width for centering */
         }
-
-        /* Difficulty Selector Positioning */
-        .difficulty-container {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            text-align: right;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
+        .difficulty-selector {
             color: #fff;
-            margin-bottom: 5px;
+            margin-top: 10px;
+            align-self: flex-end; /* Align to the right */
         }
-
-        select {
-            padding: 10px;
-            font-size: 1.2em;
-            background-color: #34495e;
+        .player-info {
             color: #fff;
-            border: none;
-            border-radius: 5px;
+            font-size: 1.5em; /* Reduced font size */
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            align-self: flex-start; /* Align to the left */
         }
-
-        /* Board styles */
+        .player-info .symbol {
+            font-size: 2.5em;
+            margin-right: 10px;
+        }
+        .x-symbol {
+            color: red;
+        }
+        .o-symbol {
+            color: blue;
+        }
         #board {
             display: grid;
             grid-template-columns: repeat(3, minmax(100px, 1fr));
             grid-template-rows: repeat(3, minmax(100px, 1fr));
             gap: 5px;
-            max-width: 140vw;
-            max-height: 140vw;
             border: 2px solid #fff;
             background-color: #34495e;
             border-radius: 10px;
             overflow: hidden;
-            margin: 20px auto;
+            margin-top: 20px; /* Space between player info and board */
         }
-
         .cell {
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: #2c3e50;
-            color: #fff;
             font-size: 2.5em;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
         .cell:hover {
             background-color: #1abc9c;
         }
-
-        /* Banner on Win */
         .banner {
             position: fixed;
             top: 0;
@@ -94,11 +83,9 @@
             font-size: 2em;
             z-index: 1000;
         }
-
         .banner p {
             margin-bottom: 20px;
         }
-
         .banner button {
             padding: 10px 20px;
             font-size: 1.2em;
@@ -108,173 +95,260 @@
             border-radius: 5px;
             cursor: pointer;
         }
-
         .banner button:hover {
             background-color: #16a085;
+        }
+        #modal {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+        #modal-content {
+            background-color: #5e2a91; /* Dark purple color */
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        #nameInput {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 1.2em; /* Adjusted font size */
+            text-transform: uppercase;
+            border: none;
+            border-radius: 5px;
+            width: 250px;
+        }
+        #startButton {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            background-color: #1abc9c;
+            color: white;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <h1>Play with A.I</h1>
-
-    <!-- Difficulty Selector -->
-    <div class="difficulty-container" id="difficultyContainer">
-        <label for="difficulty">Select Difficulty Level:</label>
+    
+    <div class="difficulty-selector">
+        <label for="difficulty">Difficulty: </label>
         <select id="difficulty">
             <option value="1">Easy</option>
             <option value="2">Medium</option>
             <option value="3">Hard</option>
-            <option value="4">Very Hard</option>
-            <option value="5">Expert</option>
         </select>
     </div>
-
-    <!-- Tic Tac Toe Board -->
+    
+    <div class="player-info">
+        <span class="symbol x-symbol">X</span><span id="player1Name">Player 1</span>
+    </div>
+    
     <div id="board"></div>
-
-    <!-- Win Banner -->
+    
+    <div class="player-info">
+        <span class="symbol o-symbol">O</span><span id="player2Name">AI</span>
+    </div>
+    
     <div class="banner" id="winBanner">
         <p id="winMessage">Game Over!</p>
         <button id="restartBtn">Restart</button>
     </div>
 
+    <div id="modal">
+        <div id="modal-content">
+            <h2 style="color: white;">Enter Your Name</h2>
+            <input type="text" id="nameInput" placeholder="Player Name" required>
+            <button id="startButton">Start Game</button>
+        </div>
+    </div>
+    
     <script>
         const board = document.getElementById('board');
-        const difficultySelect = document.getElementById('difficulty');
-        const difficultyContainer = document.getElementById('difficultyContainer');
+        const player1Name = document.getElementById('player1Name');
         const winBanner = document.getElementById('winBanner');
         const winMessage = document.getElementById('winMessage');
         const restartBtn = document.getElementById('restartBtn');
+        const modal = document.getElementById('modal');
+        const nameInput = document.getElementById('nameInput');
+        const startButton = document.getElementById('startButton');
+        const difficultySelect = document.getElementById('difficulty');
 
-        let currentPlayer = 'X'; // Human starts as 'X'
+        let currentPlayer = 'X';
         let gameBoard = ['', '', '', '', '', '', '', '', ''];
         let gameOver = false;
+        let player1;
         let difficulty = 1; // Default to Easy
-        let hasMadeFirstMove = false; // Track if the first move is made
 
-        // Render the board
+        // Show modal for player name
+        modal.style.display = 'flex';
+
+        startButton.addEventListener('click', () => {
+            player1 = nameInput.value.trim();
+            if (player1) {
+                player1Name.textContent = player1;
+                modal.style.display = 'none';
+                renderBoard();
+            } else {
+                alert("Please enter a valid name.");
+            }
+        });
+
+        difficultySelect.addEventListener('change', (event) => {
+            difficulty = parseInt(event.target.value);
+        });
+
         function renderBoard() {
             board.innerHTML = '';
             gameBoard.forEach((cell, index) => {
                 const cellDiv = document.createElement('div');
                 cellDiv.classList.add('cell');
                 cellDiv.textContent = cell;
+                if (cell === 'X') cellDiv.style.color = 'red';
+                if (cell === 'O') cellDiv.style.color = 'blue';
                 cellDiv.addEventListener('click', () => cellClicked(index));
                 board.appendChild(cellDiv);
             });
         }
 
-        // When a cell is clicked
         function cellClicked(index) {
             if (gameBoard[index] === '' && !gameOver && currentPlayer === 'X') {
                 gameBoard[index] = currentPlayer;
                 renderBoard();
-                if (!hasMadeFirstMove) {
-                    hasMadeFirstMove = true;
-                    difficultyContainer.style.display = 'none'; // Hide difficulty selector after the first move
-                }
                 if (checkWinner(currentPlayer)) {
-                    showWinBanner(currentPlayer);
+                    showWinBanner(player1);
                     gameOver = true;
                 } else if (gameBoard.every(cell => cell !== '')) {
                     showWinBanner('Draw');
                     gameOver = true;
                 } else {
-                    currentPlayer = 'O'; // Switch to the machine
-                    machineMove();
+                    currentPlayer = 'O'; // AI's turn
+                    setTimeout(machineMove, 700); // AI delay
                 }
             }
         }
 
-        // Machine move based on difficulty
         function machineMove() {
             if (!gameOver) {
-                difficulty = parseInt(difficultySelect.value); // Get selected difficulty
-                let move;
-                switch (difficulty) {
-                    case 1: // Easy: random move
-                        move = easyMove();
-                        break;
-                    case 2: // Medium: random or blocking
-                        move = mediumMove();
-                        break;
-                    case 3: // Hard: strategic move
-                        move = hardMove();
-                        break;
-                    case 4: // Very Hard: near-optimal AI
-                        move = veryHardMove();
-                        break;
-                    case 5: // Expert: Minimax algorithm
-                        move = expertMove();
-                        break;
-                }
-
+                const move = (difficulty === 1) ? easyMove() : 
+                             (difficulty === 2) ? mediumMove() : 
+                             hardMove();
                 gameBoard[move] = 'O';
                 renderBoard();
                 if (checkWinner('O')) {
-                    showWinBanner('O');
+                    showWinBanner('AI');
                     gameOver = true;
                 } else if (gameBoard.every(cell => cell !== '')) {
                     showWinBanner('Draw');
                     gameOver = true;
                 } else {
-                    currentPlayer = 'X'; // Switch back to the human player
+                    currentPlayer = 'X'; // Player's turn
                 }
             }
         }
 
-        // AI Move Functions
         function easyMove() {
             let emptyIndices = gameBoard.map((cell, index) => cell === '' ? index : null).filter(index => index !== null);
             return emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
         }
 
         function mediumMove() {
-            return easyMove();  // Placeholder for medium logic
+            const winningMove = findWinningMove('O');
+            if (winningMove !== null) return winningMove;
+
+            const blockingMove = findWinningMove('X');
+            if (blockingMove !== null) return blockingMove;
+
+            return easyMove(); // Fall back to easy
+        }
+
+        function findWinningMove(player) {
+            for (let i = 0; i < 9; i++) {
+                if (gameBoard[i] === '') {
+                    gameBoard[i] = player; // Make the move
+                    if (checkWinner(player)) {
+                        gameBoard[i] = ''; // Undo move
+                        return i; // Return winning move
+                    }
+                    gameBoard[i] = ''; // Undo move
+                }
+            }
+            return null; // No winning move found
         }
 
         function hardMove() {
-            return easyMove();  // Placeholder for hard logic
+            return minimax(gameBoard, 'O').index;
         }
 
-        function veryHardMove() {
-            return easyMove();  // Placeholder for very hard AI
+        function minimax(board, player) {
+            const availableSpots = board.map((cell, index) => cell === '' ? index : null).filter(index => index !== null);
+            
+            if (checkWinner('O')) return { score: 10 };
+            if (checkWinner('X')) return { score: -10 };
+            if (availableSpots.length === 0) return { score: 0 };
+
+            let moves = [];
+            
+            for (let spot of availableSpots) {
+                board[spot] = player;
+                const result = minimax(board, player === 'O' ? 'X' : 'O');
+                moves.push({ index: spot, score: result.score });
+                board[spot] = ''; // Undo move
+            }
+
+            let bestMove;
+            if (player === 'O') {
+                let bestScore = -Infinity;
+                for (let move of moves) {
+                    if (move.score > bestScore) {
+                        bestScore = move.score;
+                        bestMove = move;
+                    }
+                }
+            } else {
+                let bestScore = Infinity;
+                for (let move of moves) {
+                    if (move.score < bestScore) {
+                        bestScore = move.score;
+                        bestMove = move;
+                    }
+                }
+            }
+
+            return bestMove;
         }
 
-        function expertMove() {
-            return easyMove();  // Placeholder for expert move
-        }
-
-        // Check if a player has won
         function checkWinner(player) {
             const winConditions = [
-                [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
-                [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
-                [0, 4, 8], [2, 4, 6]             // diagonals
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
             ];
             return winConditions.some(condition => 
                 condition.every(index => gameBoard[index] === player)
             );
         }
 
-        // Show win banner
         function showWinBanner(winner) {
             winBanner.style.display = 'flex';
-            if (winner === 'Draw') {
-                winMessage.textContent = "It's a Draw!";
-            } else {
-                winMessage.textContent = `${winner} wins!`;
-            }
+            winMessage.textContent = (winner === 'Draw') ? "It's a Draw!" : `${winner} wins!`;
         }
 
-        // Restart the game
         restartBtn.addEventListener('click', () => {
             winBanner.style.display = 'none';
             currentPlayer = 'X';
             gameBoard = ['', '', '', '', '', '', '', '', ''];
             gameOver = false;
-            hasMadeFirstMove = false; // Reset the first move flag
-            difficultyContainer.style.display = 'block'; // Show difficulty selector after restart
             renderBoard();
         });
 
@@ -282,5 +356,4 @@
         renderBoard();
     </script>
 </body>
-</
-    
+</html>
