@@ -1,107 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tic Tac Toe</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        background-color: #2c3e50;
-    }
-    h1 {
-        text-align: center;
-        color: #fff;
-        margin-bottom: 20px;
-    }
-    #board {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(100px, 1fr));
-        grid-template-rows: repeat(3, minmax(100px, 1fr));
-        gap: 5px;
-        max-width: 140vw;
-        max-height: 140vw;
-        border: 2px solid #fff;
-        background-color: #34495e;
-        border-radius: 10px;
-        overflow: hidden;
-    }
-    .cell {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #2c3e50;
-        color: #fff;
-        font-size: 2.5em;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-    .cell:hover {
-        background-color: #1abc9c;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #2c3e50;
+        }
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        #board {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(100px, 1fr));
+            grid-template-rows: repeat(3, minmax(100px, 1fr));
+            gap: 5px;
+            max-width: 140vw;
+            max-height: 140vw;
+            border: 2px solid #fff;
+            background-color: #34495e;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #2c3e50;
+            font-size: 2.5em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .cell:hover {
+            background-color: #1abc9c;
+        }
+        .player-info {
+            color: #fff;
+            font-size: 1.5em;
+            margin: 10px 0;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+        .player-info .symbol {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+        .x-symbol {
+            color: red;
+        }
+        .o-symbol {
+            color: blue;
+        }
+        #result {
+            color: white;
+            font-size: 2em;
+            margin: 20px 0;
+        }
+        #rematch {
+            background-color: red;
+            color: white;
+            font-size: 1.5em;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #rematch:hover {
+            background-color: darkred;
+        }
+        #modal {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+        #modal-content {
+            background-color: #5e2a91; /* Dark purple color */
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        #nameInput, #nameInput2 {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 1.5em;
+            text-transform: uppercase; /* Ensure text is uppercase */
+            border: none;
+            border-radius: 5px;
+            width: 250px; /* Set fixed width for both inputs */
+        }
+        #startButton {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            background-color: #1abc9c;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-<h1>Tic Tac Toe</h1>
-<div id="board"></div>
-<script>
-    const board = document.getElementById('board');
-    let currentPlayer = 'X';
-    let gameBoard = ['', '', '', '', '', '', '', '', ''];
+    <h1>Tic Tac Toe</h1>
+    <div class="player-info">
+        <span class="symbol x-symbol">X</span><strong id="player1Name"></strong>
+    </div>
+    <div id="board"></div>
+    <div class="player-info">
+        <span class="symbol o-symbol">O</span><strong id="player2Name"></strong>
+    </div>
+    <div id="result"></div>
+    <button id="rematch">Rematch</button>
+    
+    <div id="modal">
+        <div id="modal-content">
+            <h2 style="color: white;">Enter Player Names</h2>
+            <input type="text" id="nameInput" placeholder="Player 1 (X)" required>
+            <input type="text" id="nameInput2" placeholder="Player 2 (O)" required>
+            <button id="startButton">Start Game</button>
+        </div>
+    </div>
+    
+    <script>
+        const board = document.getElementById('board');
+        const player1Name = document.getElementById('player1Name');
+        const player2Name = document.getElementById('player2Name');
+        const resultDiv = document.getElementById('result');
+        const rematchButton = document.getElementById('rematch');
+        const modal = document.getElementById('modal');
+        const nameInput = document.getElementById('nameInput');
+        const nameInput2 = document.getElementById('nameInput2');
+        const startButton = document.getElementById('startButton');
+        let currentPlayer = 'X';
+        let gameBoard = ['', '', '', '', '', '', '', '', ''];
+        let player1, player2;
 
-    function renderBoard() {
-        board.innerHTML = '';
-        gameBoard.forEach((cell, index) => {
-            const cellDiv = document.createElement('div');
-            cellDiv.classList.add('cell');
-            cellDiv.textContent = cell;
-            cellDiv.addEventListener('click', () => cellClicked(index));
-            board.appendChild(cellDiv);
-        });
-    }
+        // Show modal for player names
+        modal.style.display = 'flex';
 
-    function cellClicked(index) {
-        if (gameBoard[index] === '') {
-            gameBoard[index] = currentPlayer;
-            renderBoard();
-            if (checkWinner(currentPlayer)) {
-                alert(`${currentPlayer} wins!`);
-                resetGame();
-            } else if (gameBoard.every(cell => cell !== '')) {
-                alert("It's a draw!");
-                resetGame();
+        startButton.addEventListener('click', () => {
+            player1 = nameInput.value.trim();
+            player2 = nameInput2.value.trim();
+            if (player1 && player2) {
+                player1Name.textContent = player1;
+                player2Name.textContent = player2;
+                modal.style.display = 'none';
+                renderBoard();
             } else {
-                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                alert("Please enter valid names for both players.");
+            }
+        });
+
+        function renderBoard() {
+            board.innerHTML = '';
+            gameBoard.forEach((cell, index) => {
+                const cellDiv = document.createElement('div');
+                cellDiv.classList.add('cell');
+                cellDiv.textContent = cell;
+
+                // Set color based on player
+                if (cell === 'X') {
+                    cellDiv.style.color = 'red';
+                } else if (cell === 'O') {
+                    cellDiv.style.color = 'blue';
+                }
+
+                cellDiv.addEventListener('click', () => cellClicked(index));
+                board.appendChild(cellDiv);
+            });
+        }
+
+        function cellClicked(index) {
+            if (gameBoard[index] === '' && !checkWinner('X') && !checkWinner('O')) {
+                gameBoard[index] = currentPlayer;
+                renderBoard();
+                if (checkWinner(currentPlayer)) {
+                    showResult(`${currentPlayer === 'X' ? player1 : player2} wins!`);
+                } else if (gameBoard.every(cell => cell !== '')) {
+                    showResult("It's a draw!");
+                } else {
+                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                }
             }
         }
-    }
 
-    function checkWinner(player) {
-        const winConditions = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
-            [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
-            [0, 4, 8], [2, 4, 6]             // diagonals
-        ];
-        return winConditions.some(condition => 
-            condition.every(index => gameBoard[index] === player)
-        );
-    }
+        function checkWinner(player) {
+            const winConditions = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+                [0, 4, 8], [2, 4, 6]             // diagonals
+            ];
+            return winConditions.some(condition => 
+                condition.every(index => gameBoard[index] === player)
+            );
+        }
 
-    function resetGame() {
-        gameBoard = ['', '', '', '', '', '', '', '', ''];
-        currentPlayer = 'X';
+        function showResult(message) {
+            resultDiv.textContent = message;
+        }
+
+        rematchButton.addEventListener('click', resetGame);
+
+        function resetGame() {
+            gameBoard = ['', '', '', '', '', '', '', '', ''];
+            currentPlayer = 'X';
+            resultDiv.textContent = '';
+            renderBoard();
+        }
+
         renderBoard();
-    }
-
-    renderBoard();
-</script>
+    </script>
 </body>
 </html>
-
