@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic-Tac-Toe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* General Reset */
         * {
@@ -15,50 +15,50 @@
 
         /* Body Styles */
         body {
-            background-image : url("images - 2024-10-09T173027.654.jpeg");
-            font-family: Arial, sans-serif;
-            color: white;
+            background-color: #f0f0f0;
+            font-family: 'Playfair Display', serif;
+            color: #333;
+            text-align: center;
         }
 
         /* Title */
         .title {
-            text-align: center;
             margin-top: 20px;
         }
         
         .title p {
-            font-family: 'Roboto Mono', monospace; /* Robotic font for heading */
-            font-size: 10vw; /* Larger heading for responsiveness */
-            color: white;
+            font-size: 4em; /* Larger heading */
+            color: #d9534f; /* Classic red */
             font-weight: bold;
         }
 
         hr {
-            border: 1px solid white;
-            margin: 20px 0;
+            border: 1px solid #d9534f;
+            margin: 20px auto;
+            width: 80%;
         }
 
         /* Image and Button Containers */
         .play1, .play2 {
-            text-align: center;
             margin-bottom: 20px;
         }
 
         img {
             width: 80%;
-            max-width: 800px;
-            height: 200px;
+            max-width: 600px;
+            height: auto;
             display: block;
             margin: 0 auto;
-            border-radius : 15px ;
+            border-radius: 10px; /* Slightly rounded corners */
+            border: 2px solid #d9534f; /* Classic border */
         }
 
         button {
-            background-color: red;
+            background-color: #d9534f; /* Classic red */
             color: white;
-            font-family: 'Roboto Mono', monospace; /* Robotic font for buttons */
+            font-family: 'Playfair Display', serif; /* Classic font for buttons */
             font-size: 1.5em;
-            padding: 5px 10px;
+            padding: 10px 20px;
             border: none;
             cursor: pointer;
             border-radius: 5px;
@@ -68,18 +68,16 @@
         }
 
         button:hover {
-            background-color: black;
+            background-color: #c9302c; /* Darker red on hover */
         }
 
         /* Links */
         a {
             text-decoration: none;
-            color: black;
         }
 
         /* Footer */
         .footer {
-            text-align: center;
             font-size: 1.2em;
             margin-top: 30px;
         }
@@ -90,9 +88,6 @@
     <!-- Title Section -->
     <div class="title">
         <p>Tic-Tac-Toe</p>
-        
-        <br>
-        
     </div>
 
     <!-- Play with Friends Section -->
@@ -109,7 +104,7 @@
         <a href="Machineplay.html" target="_blank">
             <button>Play with Machine</button>
         </a>
-    </d
+    </div>
 
     <hr>
 
